@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market In - Hablá con Nuestra IA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            animation: slideUp 0.5s ease-out;
+            text-align: center;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .subtitle {
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 16px;
+        }
+
+        p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .call-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .call-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .call-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .call-button.active {
+            background: linear-gradient(135deg, #f44336 0%, #e91e63 100%);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .icon {
+            font-size: 24px;
+        }
+
+        #status {
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 20px;
+        }
+
+        #status.idle {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        #status.connecting {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        #status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        #status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 24px;
+            text-align: left;
+        }
+
+        .instructions h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .instructions ul {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-left: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+            color: #999;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .call-button {
+                padding: 16px 32px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="subtitle">Market In</div>
+        <h1>Hablá con Nuestra IA</h1>
+        <p>Hacé clic en el botón y hablá directamente desde tu navegador. Te contaremos todo sobre Market In en 30 segundos.</p>
+
+        <button id="callButton" class="call-button">
+            <span class="icon">🎤</span>
+            <span id="buttonText">Hablar Ahora</span>
+        </button>
+
+        <div id="status" class="idle">
+            Listo para comenzar. Asegurate de tener micrófono habilitado.
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Cómo funciona:</h3>
+            <ul>
+                <li>Hacé clic en "Hablar Ahora"</li>
+                <li>Permite el acceso al micrófono</li>
+                <li>Hablá con nuestro agente de IA</li>
+                <li>Al terminar, colgá o hacé clic en "Colgar"</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>🔒 Tu privacidad es importante. No grabamos datos personales.</p>
+        </div>
+    </div>
+
+    <!-- VAPI Web SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@vapi-ai/web@latest/dist/index.js"></script>
+
+    <script>
+        // Configuración VAPI
+        const VAPI_PUBLIC_KEY = 'TU_PUBLIC_KEY_AQUI'; // ⚠️ Usar PUBLIC KEY (no private)
+        const ASSISTANT_ID = 'f8896006-9b7f-44aa-9832-c93e57675e4b';
+
+        // Elementos del DOM
+        const callButton = document.getElementById('callButton');
+        const buttonText = document.getElementById('buttonText');
+        const statusDiv = document.getElementById('status');
+
+        // Inicializar VAPI
+        let vapi = null;
+        let isCallActive = false;
+
+        try {
+            vapi = new window.Vapi(VAPI_PUBLIC_KEY);
+        } catch (error) {
+            console.error('Error al inicializar VAPI:', error);
+            showStatus('Error al cargar VAPI. Verifica la consola.', 'error');
+        }
+
+        // Event listeners de VAPI
+        if (vapi) {
+            vapi.on('call-start', () => {
+                console.log('Llamada iniciada');
+                isCallActive = true;
+                callButton.classList.add('active');
+                buttonText.textContent = 'Colgar';
+                showStatus('🎙️ Llamada activa. Estás hablando con la IA...', 'active');
+            });
+
+            vapi.on('call-end', () => {
+                console.log('Llamada finalizada');
+                isCallActive = false;
+                callButton.classList.remove('active');
+                buttonText.textContent = 'Hablar Ahora';
+                showStatus('Llamada finalizada. ¡Gracias por conversar con nosotros!', 'idle');
+            });
+
+            vapi.on('speech-start', () => {
+                console.log('Usuario comenzó a hablar');
+                showStatus('🎤 Te estamos escuchando...', 'active');
+            });
+
+            vapi.on('speech-end', () => {
+                console.log('Usuario dejó de hablar');
+                showStatus('🤖 La IA está respondiendo...', 'active');
+            });
+
+            vapi.on('error', (error) => {
+                console.error('Error en VAPI:', error);
+                showStatus(`Error: ${error.message || 'Algo salió mal'}`, 'error');
+                isCallActive = false;
+                callButton.classList.remove('active');
+                buttonText.textContent = 'Hablar Ahora';
+            });
+
+            vapi.on('message', (message) => {
+                console.log('Mensaje de VAPI:', message);
+            });
+        }
+
+        // Manejar clic en botón
+        callButton.addEventListener('click', async () => {
+            if (!vapi) {
+                showStatus('VAPI no está inicializado. Verifica la PUBLIC KEY.', 'error');
+                return;
+            }
+
+            if (isCallActive) {
+                // Colgar
+                vapi.stop();
+            } else {
+                // Iniciar llamada
+                try {
+                    showStatus('🔄 Conectando con la IA...', 'connecting');
+                    callButton.disabled = true;
+
+                    await vapi.start(ASSISTANT_ID);
+
+                    callButton.disabled = false;
+                } catch (error) {
+                    console.error('Error al iniciar llamada:', error);
+                    showStatus(`Error: ${error.message || 'No se pudo iniciar la llamada'}`, 'error');
+                    callButton.disabled = false;
+                    isCallActive = false;
+                }
+            }
+        });
+
+        // Función auxiliar para mostrar estados
+        function showStatus(message, type) {
+            statusDiv.textContent = message;
+            statusDiv.className = type;
+        }
+
+        // Verificar que la PUBLIC KEY esté configurada
+        if (VAPI_PUBLIC_KEY === 'TU_PUBLIC_KEY_AQUI') {
+            showStatus('⚠️ Falta configurar la PUBLIC KEY en el código', 'error');
+        }
+    </script>
+</body>
+</html>

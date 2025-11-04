@@ -1,0 +1,12 @@
+{
+  "buildCommand": "pip install -r api/requirements.txt",
+  "env": {
+    "VAPI_API_KEY": "@VAPI_API_KEY",
+    "VAPI_ASSISTANT_ID": "@VAPI_ASSISTANT_ID"
+  },
+  "functions": {
+    "api/index.py": {
+      "runtime": "python3.10"
+    }
+  }
+}

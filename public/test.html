@@ -1,0 +1,313 @@
+<!-- 
+    Market In - Test Page Local
+    Para pruebas en desarrollo con backend en localhost:8000
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market In - Test Backend</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            background: #f0f0f0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        label {
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input[type="tel"],
+        input[type="text"] {
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="tel"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #message {
+            padding: 14px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            min-height: 20px;
+            margin-top: 16px;
+        }
+
+        #message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        #message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        #message.loading {
+            background: #cce5ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+
+        .test-info {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+            color: #999;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            p {
+                font-size: 15px;
+                margin-bottom: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="subtitle">🧪 TESTING LOCAL - DEVELOPMENT</div>
+        <h1>Market In - Test</h1>
+        
+        <div class="test-info">
+            <strong>ℹ️ Modo Testing:</strong> Este formulario conecta a tu backend en localhost:8000. Para producción, abre index.html en /public.
+        </div>
+
+        <p>Ingresá tu número de teléfono para probar la integración con VAPI.</p>
+
+        <form id="call-form">
+            <label for="phone-number">Tu número de teléfono:</label>
+            <input
+                type="tel"
+                id="phone-number"
+                name="phone-number"
+                placeholder="+54 9 11 2345 6789"
+                required
+            >
+
+            <label for="api-url">URL del Backend (opcional):</label>
+            <input
+                type="text"
+                id="api-url"
+                name="api-url"
+                placeholder="http://localhost:8000"
+                value="http://localhost:8000"
+            >
+
+            <button type="submit" id="submit-btn">Enviar Prueba</button>
+        </form>
+
+        <div id="message"></div>
+
+        <div class="footer">
+            <p><strong>Backend Status:</strong> <span id="backend-status">Verificando...</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Verificar estado del backend
+        async function checkBackend() {
+            const statusEl = document.getElementById('backend-status');
+            try {
+                const response = await fetch('http://localhost:8000/', { method: 'GET' });
+                if (response.ok) {
+                    statusEl.textContent = '✅ Online';
+                    statusEl.style.color = '#28a745';
+                } else {
+                    statusEl.textContent = '❌ Offline';
+                    statusEl.style.color = '#dc3545';
+                }
+            } catch (e) {
+                statusEl.textContent = '❌ Offline';
+                statusEl.style.color = '#dc3545';
+            }
+        }
+
+        checkBackend();
+
+        // Formulario
+        document.addEventListener('DOMContentLoaded', function () {
+            const callForm = document.getElementById('call-form');
+            const phoneNumberInput = document.getElementById('phone-number');
+            const apiUrlInput = document.getElementById('api-url');
+            const submitBtn = document.getElementById('submit-btn');
+            const messageDiv = document.getElementById('message');
+
+            callForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const phoneNumber = phoneNumberInput.value.trim();
+                const apiUrl = apiUrlInput.value.trim();
+
+                if (!phoneNumber) {
+                    showMessage('Por favor, ingresá un número de teléfono.', 'error');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                messageDiv.textContent = 'Llamando...';
+                messageDiv.className = 'loading';
+
+                try {
+                    const response = await fetch(`${apiUrl}/api/trigger-call`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            phoneNumber: phoneNumber,
+                        }),
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showMessage(
+                            `✅ ${data.message}\n\nCall ID: ${data.call_id || 'N/A'}`,
+                            'success'
+                        );
+                        phoneNumberInput.value = '';
+                        setTimeout(() => {
+                            submitBtn.disabled = false;
+                        }, 5000);
+                    } else {
+                        showMessage(data.message || 'Ocurrió un error.', 'error');
+                        submitBtn.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showMessage(`❌ Error de conexión: ${error.message}`, 'error');
+                    submitBtn.disabled = false;
+                }
+            });
+
+            function showMessage(message, type) {
+                messageDiv.textContent = message;
+                messageDiv.className = type;
+            }
+        });
+    </script>
+</body>
+</html>
